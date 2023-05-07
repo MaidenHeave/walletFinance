@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/pages/withdrawPage.dart';
 
-class WithdrawSelector extends StatefulWidget {
+class selectNetworkWithdraw extends StatefulWidget {
   @override
-  WithdrawSelectorState createState() => WithdrawSelectorState();
+  selectNetworkWithdrawState createState() => selectNetworkWithdrawState();
 }
 
-class WithdrawSelectorState extends State<WithdrawSelector> {
+class selectNetworkWithdrawState extends State<selectNetworkWithdraw> {
   final List<Map<String, dynamic>> paymentOperator = [
     {
       "name": "Orange Money",
@@ -109,7 +109,7 @@ class WithdrawtMethod extends StatelessWidget {
                 CupertinoPageRoute(
                   fullscreenDialog: true,
                   builder: (context) {
-                    return WithdrawPage();
+                    return WithdrawPage(paymentName, paymentLogo);
                   },
                 ),
               );
