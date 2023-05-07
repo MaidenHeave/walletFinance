@@ -2,29 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/pages/pages.dart';
 
-class BalanceSection extends StatelessWidget {
-  final List<Map<String, dynamic>> paymentOperator = [
-    {
-      "name": "Orange Money",
-      "logoLink":
-          "https://logos-marques.com/wp-content/uploads/2021/07/Orange-Money-logo.png"
-    },
-    {
-      "name": "Moov Money",
-      "logoLink":
-          "https://www.moov-africa.ci/wp-content/uploads/2022/05/icon-assistance-moovci_Plan-de-travail-1-1.png"
-    },
-    {
-      "name": "MTN Money",
-      "logoLink": "https://www.sanwi-informatique.com/img/cms/mtn-money.png"
-    },
-    {
-      "name": "Wave Mobile",
-      "logoLink":
-          "https://cdn-website.partechpartners.com/media/images/Wave-logo-website.original.png"
-    }
-  ];
+import 'package:wallet/assets/paymentUrls.dart';
 
+class BalanceSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
