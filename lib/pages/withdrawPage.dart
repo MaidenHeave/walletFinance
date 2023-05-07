@@ -79,7 +79,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
               ),
               const Center(
                 child: Text(
-                  'Numero a debiter',
+                  'Numero de retrait',
                   style: TextStyle(
                     fontSize: 11,
                   ),
