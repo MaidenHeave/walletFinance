@@ -32,6 +32,10 @@ class BalanceSection extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(50)),
                     color: Colors.grey,
                   ),
+                  child: const Image(
+                    image: NetworkImage(
+                        "https://www.chathamhouse.org/sites/default/files/styles/uncropped_tiny/public/2023-03/PinClipart.com_murder-clip-art_5376441.png?itok=zKK8nOOz"),
+                  ),
                 ),
                 const SizedBox(
                   width: 10,
@@ -55,8 +59,8 @@ class BalanceSection extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  width: 120,
+                SizedBox(
+                  width: screensize.width * 0.39,
                 ),
                 const Padding(
                   padding: EdgeInsets.all(8.0),
@@ -93,10 +97,10 @@ class BalanceSection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(
-                  width: screensize.width * 0.46,
+                  width: screensize.width * 0.50,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 20),
+                  padding: EdgeInsets.only(right: screensize.width * 0.03),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -254,7 +258,7 @@ class BalanceSection extends StatelessWidget {
                         CupertinoPageRoute(
                           fullscreenDialog: true,
                           builder: (context) {
-                            return WithdrawSelector();
+                            return selectNetworkWithdraw();
                           },
                         ),
                       );
