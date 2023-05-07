@@ -52,7 +52,7 @@ class BalanceSection extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(50)),
                     color: Colors.grey,
                   ),
-                  child: Image(
+                  child: const Image(
                     image: NetworkImage(
                         "https://www.chathamhouse.org/sites/default/files/styles/uncropped_tiny/public/2023-03/PinClipart.com_murder-clip-art_5376441.png?itok=zKK8nOOz"),
                   ),

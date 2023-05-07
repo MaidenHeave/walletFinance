@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wallet/pages/withdrawPage.dart';
+import 'package:wallet/pages/pages.dart';
 
 class selectNetworkWithdraw extends StatefulWidget {
   @override
@@ -109,7 +109,7 @@ class WithdrawtMethod extends StatelessWidget {
                 CupertinoPageRoute(
                   fullscreenDialog: true,
                   builder: (context) {
-                    return WithdrawPage(paymentName, paymentLogo);
+                    return SelectRetraitContactPage(paymentName, paymentLogo);
                   },
                 ),
               );
@@ -176,7 +176,7 @@ class WithdrawtMethod extends StatelessWidget {
                       ),
                       Text(
                         "transfert instantane vers $paymentName",
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       )
                     ],
                   ),
