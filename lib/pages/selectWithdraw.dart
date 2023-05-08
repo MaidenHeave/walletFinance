@@ -17,7 +17,8 @@ class WithdrawSelectorState extends State<WithdrawSelector> {
     {
       "name": "Moov Money",
       "logoLink":
-          "https://www.moov-africa.ci/wp-content/uploads/2022/05/icon-assistance-moovci_Plan-de-travail-1-1.png"
+          // "https://www.moov-africa.ci/wp-content/uploads/2022/05/icon-assistance-moovci_Plan-de-travail-1-1.png"
+          "https://upload.wikimedia.org/wikipedia/fr/1/1d/Moov_Africa_logo.png"
     },
     {
       "name": "MTN Money",
