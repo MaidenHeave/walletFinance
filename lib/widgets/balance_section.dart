@@ -137,17 +137,17 @@ class BalanceSection extends StatelessWidget {
                     height: screensize.height * 0.15,
                     width: screensize.width * 0.28,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: const [
                         Padding(
-                          padding: EdgeInsets.only(left: 10, top: 15),
+                          padding: EdgeInsets.only(left: 0, top: 15),
                           child: Icon(Icons.analytics),
                         ),
                         SizedBox(
                           height: 8,
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 10),
+                          padding: EdgeInsets.only(left: 0),
                           child: Text(
                             "Statistiques",
                             style: TextStyle(
@@ -217,14 +217,14 @@ class BalanceSection extends StatelessWidget {
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 0),
                       height: screensize.height * 0.15,
                       width: screensize.width * 0.25,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: const [
                           Padding(
-                            padding: EdgeInsets.only(left: 10, top: 15),
+                            padding: EdgeInsets.only(left: 0, top: 15),
                             child: Icon(Icons.upload_rounded),
                           ),
                           SizedBox(
@@ -232,7 +232,7 @@ class BalanceSection extends StatelessWidget {
                           ),
                           Padding(
                             padding: EdgeInsets.only(
-                              left: 10,
+                              left: 0,
                             ),
                             child: Text(
                               "Deposer",
@@ -260,15 +260,15 @@ class BalanceSection extends StatelessWidget {
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 0),
                       color: Colors.transparent,
                       height: screensize.height * 0.15,
                       width: screensize.width * 0.27,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: const [
                           Padding(
-                            padding: EdgeInsets.only(left: 10, top: 15),
+                            padding: EdgeInsets.only(left: 0, top: 15),
                             child: Icon(Icons.download_rounded),
                           ),
                           SizedBox(
@@ -276,7 +276,7 @@ class BalanceSection extends StatelessWidget {
                           ),
                           Padding(
                             padding: EdgeInsets.only(
-                              left: 10,
+                              left: 0,
                             ),
                             child: Text(
                               "Retirer",
