@@ -16,78 +16,201 @@ class _SelectDepositorState extends State<SelectDepositor> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: screenSize.height * 0.08,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: screenSize.width * 0.02),
-                child: GestureDetector(
+      body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: screenSize.height * 0.08,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: screenSize.width * 0.02),
+                  child: GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: const Icon(Icons.arrow_back)),
-              ),
-              SizedBox(
-                width: screenSize.width * 0.1,
-              ),
-              const Text(
-                'Choisissez le numero a debiter',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-              )
-            ],
-          ),
-          SizedBox(
-            height: screenSize.height * 0.02,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.04),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    fullscreenDialog: true,
-                    builder: (context) {
-                      return DepositPage(widget.paymentMethod, widget.logoUrl);
-                    },
+                    child: const Icon(Icons.arrow_back),
                   ),
-                );
-              },
+                ),
+                SizedBox(
+                  width: screenSize.width * 0.1,
+                ),
+                const Text(
+                  'Choisissez le numero a debiter',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                )
+              ],
+            ),
+            SizedBox(
+              height: screenSize.height * 0.02,
+            ),
+            Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: screenSize.width * 0.04),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      fullscreenDialog: true,
+                      builder: (context) {
+                        return DepositPage(
+                            widget.paymentMethod, widget.logoUrl);
+                      },
+                    ),
+                  );
+                },
+                child: Container(
+                  height: screenSize.height * 0.1,
+                  width: screenSize.width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(width: 0.2),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: screenSize.width * 0.01),
+                        child: Container(
+                          height: screenSize.height * 0.045,
+                          width: screenSize.width * 0.1,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              'Utiliser mon numero',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15),
+                            ),
+                            Text(
+                              '01 71 70 59 22',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w300, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(Icons.arrow_forward_ios),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: screenSize.height * 0.01,
+            ),
+            Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: screenSize.width * 0.04),
+              child: GestureDetector(
+                onTap: () {
+                  _showCustomDialog(context);
+                },
+                child: Container(
+                  height: screenSize.height * 0.1,
+                  width: screenSize.width,
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 220, 224, 227),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: screenSize.width * 0.04,
+                        ),
+                        child: const Icon(Icons.add_box_rounded),
+                      ),
+                      SizedBox(
+                        width: screenSize.width * 0.05,
+                      ),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Ajoutez un nouveau numero de depot',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15),
+                            ),
+                            Text(
+                              widget.paymentMethod, // Here
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: screenSize.height * 0.02,
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: screenSize.width * 0.04,
+                  right: screenSize.width * 0.04),
+              child: const Divider(
+                thickness: 1,
+              ),
+            ),
+            SizedBox(
+              height: screenSize.height * 0.01,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: screenSize.width * 0.04),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: screenSize.width * 0.04),
+              child: const Text(
+                'Mes Numeros De Depot',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              ),
+            ),
+            SizedBox(
+              height: screenSize.height * 0.02,
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: screenSize.width * 0.04,
+                  right: screenSize.width * 0.04),
               child: Container(
                 height: screenSize.height * 0.1,
                 width: screenSize.width,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
                   border: Border.all(width: 0.2),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: screenSize.width * 0.01),
-                      child: Container(
-                        height: screenSize.height * 0.045,
-                        width: screenSize.width * 0.1,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                    ),
-                    Flexible(
+                      padding: EdgeInsets.only(left: screenSize.width * 0.03),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           Text(
-                            'Utiliser mon numero',
+                            'Numero de depot 1',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 15),
                           ),
@@ -99,63 +222,61 @@ class _SelectDepositorState extends State<SelectDepositor> {
                         ],
                       ),
                     ),
-                    const Icon(Icons.arrow_forward_ios),
+                    Padding(
+                      padding: EdgeInsets.only(right: screenSize.width * 0.03),
+                      child: const Icon(Icons.arrow_forward_ios),
+                    ),
                   ],
                 ),
               ),
             ),
-          ),
-          SizedBox(
-            height: screenSize.height * 0.01,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.04),
-            child: GestureDetector(
-              onTap: () {
-                _showCustomDialog(context);
-              },
+            SizedBox(
+              height: screenSize.height * 0.02,
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: screenSize.width * 0.03,
+                  right: screenSize.width * 0.03),
               child: Container(
                 height: screenSize.height * 0.1,
                 width: screenSize.width,
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 220, 224, 227),
+                  border: Border.all(width: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(
-                        left: screenSize.width * 0.04,
-                      ),
-                      child: const Icon(Icons.add_box_rounded),
-                    ),
-                    SizedBox(
-                      width: screenSize.width * 0.05,
-                    ),
-                    Flexible(
+                      padding: EdgeInsets.only(left: screenSize.width * 0.03),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Ajoutez un nouveau numero de depot',
+                        children: const [
+                          Text(
+                            'Numero de depot 2',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 15),
                           ),
                           Text(
-                            widget.paymentMethod, // Here
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 15),
+                            '01 71 70 59 22',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300, fontSize: 15),
                           ),
                         ],
                       ),
-                    )
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: screenSize.width * 0.03),
+                      child: const Icon(Icons.arrow_forward_ios),
+                    ),
                   ],
                 ),
               ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

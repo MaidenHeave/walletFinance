@@ -32,10 +32,6 @@ class BalanceSection extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(50)),
                     color: Colors.grey,
                   ),
-                  child: const Image(
-                    image: NetworkImage(
-                        "https://www.chathamhouse.org/sites/default/files/styles/uncropped_tiny/public/2023-03/PinClipart.com_murder-clip-art_5376441.png?itok=zKK8nOOz"),
-                  ),
                 ),
                 const SizedBox(
                   width: 10,
@@ -44,16 +40,19 @@ class BalanceSection extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Josue Guessennd",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                    children: [
                       SizedBox(
+                        width: screensize.width * 0.30,
+                        child: const Text(
+                          "Joshua Guessennd",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(
                         height: 4,
                       ),
-                      Text(
-                        "01 70 70 57 44",
+                      const Text(
+                        "01 00 00 00 00",
                         style: TextStyle(fontWeight: FontWeight.w300),
                       ),
                     ],
@@ -83,7 +82,7 @@ class BalanceSection extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: const [
                     Text(
-                      'Compte Principal',
+                      'Solde',
                       style: TextStyle(fontWeight: FontWeight.w300),
                     ),
                     SizedBox(

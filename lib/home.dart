@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wallet/PageView/ExchangeView.dart';
+import 'package:wallet/PageView/HomeView.dart';
 import 'widgets/widgets.dart';
 
 class WalletHome extends StatefulWidget {
@@ -8,10 +10,12 @@ class WalletHome extends StatefulWidget {
 
 class WalletHomeState extends State<WalletHome> {
   int _selectedIndex = 0;
+  final PageController _pageController = PageController();
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _pageController.jumpToPage(index);
     });
   }
 
@@ -19,27 +23,18 @@ class WalletHomeState extends State<WalletHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffbabcbf),
-      body: Column(
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() => _selectedIndex = index);
+        },
+        // physics: const NeverScrollableScrollPhysics(),
         children: [
-          BalanceSection(),
-          const SizedBox(
-            height: 8,
-          ),
-          WalletButton(),
-          const SizedBox(
-            height: 8,
-          ),
-          Expanded(
-            child: DraggableScrollableSheet(
-              initialChildSize: 1,
-              maxChildSize: 1,
-              expand: true,
-              builder:
-                  (BuildContext context, ScrollController scrollController) {
-                return AssetSection();
-              },
-            ),
-          ),
+          HomeView(),
+          ExchangeView(), // Your Exchange page here
+          Container(color: Colors.blue), // Your Properties page here
+          Container(color: Colors.yellow), // Your Tontines page here
+          Container(color: Colors.purple),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

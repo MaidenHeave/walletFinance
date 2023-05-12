@@ -31,20 +31,12 @@ class _AssetSectionState extends State<AssetSection> {
           "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
     },
     {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
+      "name": "LINK",
+      "symbol": "LNK",
+      "prix": "FCFA 4178",
+      "variation": "+ 344",
       "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
+          "https://seeklogo.com/images/C/chainlink-link-logo-CDF7095A43-seeklogo.com.png",
     },
     {
       "name": "Arbitrum",
