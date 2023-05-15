@@ -20,7 +20,7 @@ class Token {
       name: json["name"],
       symbol: json["symbol"],
       imageUrl: json["symbol_url"],
-      prix: '',
+      prix: json["price"],
     );
   }
 
