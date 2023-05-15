@@ -12,21 +12,35 @@ class ExchangeView extends StatefulWidget {
 }
 
 class _ExchangeViewState extends State<ExchangeView> {
-  Token firstCard = Token(
-    name: "USDT",
-    symbol: "USDT",
-    imageUrl: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
-    // balance: '15000 FCFA',
-    prix: '1 USD = 599 CFA',
-  );
+  // Token firstCard = Token(
+  //   name: "USDT",
+  //   symbol: "USDT",
+  //   imageUrl: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
+  //   prix: '${fetchTokenList()[]}',
+  // );
+  bool isInitialized = false;
+  late Token firstCard;
 
   Token secondCard = Token(
-    name: "ETH",
-    symbol: "ETH",
-    imageUrl: 'https://assets.stickpng.com/images/5a7593fc64538c292dec1bbf.png',
-    // balance: '3 ETH',
-    prix: '1 ETH = 879 999 CFA',
+    name: "Choisir une crypto",
+    symbol: '',
+    imageUrl:
+        'https://pngimg.com/uploads/question_mark/question_mark_PNG99.png',
+    prix: 'asset',
   );
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchTokenList().then((tokens) {
+      if (tokens.isNotEmpty) {
+        setState(() {
+          firstCard = tokens.first;
+          isInitialized = true;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,15 +90,17 @@ class _ExchangeViewState extends State<ExchangeView> {
                   padding: EdgeInsets.only(
                       left: screenSize.width * 0.03,
                       right: screenSize.width * 0.03),
-                  child: ExchangeCard(
-                    data: firstCard,
-                    onTokenSelect: (Token token) {
-                      setState(() {
-                        firstCard = token;
-                      });
-                    },
-                    otherToken: firstCard,
-                  ),
+                  child: isInitialized
+                      ? ExchangeCard(
+                          data: firstCard,
+                          onTokenSelect: (Token token) {
+                            setState(() {
+                              firstCard = token;
+                            });
+                          },
+                          otherToken: firstCard,
+                        )
+                      : ExchangeMockCard(),
                 ),
                 Padding(
                     padding: EdgeInsets.only(
@@ -161,30 +177,6 @@ class ExchangeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // List<Token> mockTokens = [
-    //   Token(
-    //     name: "Bitcoin",
-    //     symbol: "BTC",
-    //     imageUrl: "https://cryptologos.cc/logos/bitcoin-btc-logo.png",
-    //     prix: "FCFA 16,762,462.61",
-    //     balance: "0",
-    //   ),
-    //   Token(
-    //     name: "Ethereum",
-    //     symbol: "ETH",
-    //     imageUrl:
-    //         "https://www.pngall.com/wp-content/uploads/10/Ethereum-Logo-PNG.png",
-    //     prix: "FCFA 0",
-    //     balance: "0",
-    //   ),
-    //   Token(
-    //     name: "USDT",
-    //     symbol: "USDT",
-    //     imageUrl: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
-    //     balance: '15000 FCFA',
-    //     prix: '1 USD = 599 CFA',
-    //   ),
-    // ];
     Future<List<Token>> mockTokens = fetchTokenList();
 
     var screenSize = MediaQuery.of(context).size;
@@ -210,7 +202,7 @@ class ExchangeCard extends StatelessWidget {
             SizedBox(
               height: screenSize.height * 0.06,
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
                     padding: EdgeInsets.only(
@@ -236,9 +228,10 @@ class ExchangeCard extends StatelessWidget {
                                 data.name,
                                 style: TextStyle(fontWeight: FontWeight.w700),
                               ),
-                              Text(
-                                data.prix,
-                              ),
+                              Text((data.symbol.isNotEmpty &&
+                                      data.prix.isNotEmpty)
+                                  ? '1 ${data.symbol} = ${data.prix} CFA'
+                                  : ''),
                             ],
                           ),
                           SizedBox(
@@ -310,7 +303,7 @@ class ExchangeCard extends StatelessWidget {
                                                             .center,
                                                     children: [
                                                       Text(
-                                                        '0',
+                                                        asset.prix,
                                                         textAlign:
                                                             TextAlign.right,
                                                         style: const TextStyle(
@@ -318,15 +311,15 @@ class ExchangeCard extends StatelessWidget {
                                                                 FontWeight.bold,
                                                             fontSize: 12.4),
                                                       ),
-                                                      Row(
+                                                      const Row(
                                                         mainAxisSize:
                                                             MainAxisSize.min,
                                                         children: [
-                                                          const SizedBox(
+                                                          SizedBox(
                                                             width: 5,
                                                           ),
                                                           Text(
-                                                            asset.prix,
+                                                            '0',
                                                             style: TextStyle(
                                                                 fontSize: 12,
                                                                 color: Colors
@@ -351,7 +344,7 @@ class ExchangeCard extends StatelessWidget {
                                             return Text('${snapshot.error}');
                                           } else {
                                             // By default, show a loading spinner.
-                                            return CircularProgressIndicator();
+                                            return const CircularProgressIndicator();
                                           }
                                         },
                                       ),
@@ -361,8 +354,8 @@ class ExchangeCard extends StatelessWidget {
                               );
                             },
                             child: Image(
-                              height: screenSize.height * 0.03,
-                              image: NetworkImage(
+                              height: screenSize.height * 0.02,
+                              image: const NetworkImage(
                                 "https://static.thenounproject.com/png/1123247-200.png",
                               ),
                             ),
@@ -405,21 +398,226 @@ class ExchangeCard extends StatelessWidget {
   }
 }
 
-// class Token {
-//   final String name;
-//   final String symbol;
-//   final String imageUrl;
-//   final String prix;
-//   final String balance;
+class ExchangeMockCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Future<List<Token>> mockTokens = fetchTokenList();
 
-//   Token({
-//     required this.name,
-//     required this.symbol,
-//     required this.imageUrl,
-//     required this.prix,
-//     required this.balance,
-//   });
-// }
+    var screenSize = MediaQuery.of(context).size;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
+      child: Container(
+        height: screenSize.height * 0.19,
+        width: screenSize.width,
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.3),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  left: screenSize.width * 0.02,
+                  top: screenSize.height * 0.008),
+              // child: Text(data.title),
+            ),
+            SizedBox(
+              height: screenSize.height * 0.06,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: screenSize.height * 0.01,
+                        left: screenSize.width * 0.02),
+                    child: SizedBox(
+                      height: 35,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Image(
+                          //   fit: BoxFit.contain,
+                          //   image: NetworkImage(data.imageUrl),
+                          // ),
+                          SizedBox(
+                            width: screenSize.width * 0.02,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Text(
+                              //   d,
+                              //   style: TextStyle(fontWeight: FontWeight.w700),
+                              // ),
+                              // Text('1 ${data.symbol} = ${data.prix} CFA'),
+                            ],
+                          ),
+                          SizedBox(
+                            width: screenSize.width * 0.03,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled:
+                                    true, // This allows the modal to be of custom size.
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                builder: (BuildContext context) {
+                                  return ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxHeight:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical:
+                                            MediaQuery.of(context).size.height *
+                                                0.02,
+                                        horizontal:
+                                            MediaQuery.of(context).size.width *
+                                                0.02,
+                                      ),
+                                      child: FutureBuilder<List<Token>>(
+                                        future: mockTokens,
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<List<Token>>
+                                                snapshot) {
+                                          if (snapshot.hasData) {
+                                            return ListView.builder(
+                                              itemCount: snapshot.data!.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                final asset =
+                                                    snapshot.data![index];
+                                                return ListTile(
+                                                  leading: Container(
+                                                    height: 35,
+                                                    width: 35,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16)),
+                                                    child: Image(
+                                                      image: NetworkImage(
+                                                          asset.imageUrl),
+                                                    ),
+                                                  ), // Replace with actual token icon
+                                                  title: Text(
+                                                    asset.name,
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ), //
+                                                  subtitle: Text(asset.symbol),
+                                                  trailing: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        asset.prix,
+                                                        textAlign:
+                                                            TextAlign.right,
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 12.4),
+                                                      ),
+                                                      const Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          Text(
+                                                            '0',
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .black),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  // onTap: () {
+                                                  //   // Handle the token selection here
+                                                  //   print(
+                                                  //       'Selected token: ${asset.name}');
+                                                  //   onTokenSelect(asset);
+                                                  //   Navigator.pop(
+                                                  //       context); // Close the modal
+                                                  // },
+                                                );
+                                              },
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return Text('${snapshot.error}');
+                                          } else {
+                                            // By default, show a loading spinner.
+                                            return const CircularProgressIndicator();
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Image(
+                              height: screenSize.height * 0.02,
+                              image: const NetworkImage(
+                                "https://static.thenounproject.com/png/1123247-200.png",
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: screenSize.height * 0.02,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: screenSize.width * 0.02),
+              child: TextField(
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                style: const TextStyle(fontSize: 18),
+                autofocus: true,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                    border: InputBorder.none, hintText: "0"),
+              ),
+            ),
+            SizedBox(
+              height: screenSize.height * 0.01,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: screenSize.width * 0.02),
+              child: Text(
+                'Solde: ${0}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 Future<List<Token>> fetchTokenList() async {
   final tokens = await Token.fetchTokens("http://127.0.0.1:5000/tokens");
