@@ -28,10 +28,11 @@ class WalletHomeState extends State<WalletHome> {
         onPageChanged: (index) {
           setState(() => _selectedIndex = index);
         },
-        // physics: const NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           HomeView(),
-          ExchangeView(), // Your Exchange page here
+          ExchangeView(
+              pageController: _pageController), // Your Exchange page here
           Container(color: Colors.blue), // Your Properties page here
           Container(color: Colors.yellow), // Your Tontines page here
           Container(color: Colors.purple),

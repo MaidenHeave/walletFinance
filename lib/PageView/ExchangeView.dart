@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wallet/widgets/widgets.dart';
+import 'package:wallet/models/models.dart';
 
 class ExchangeView extends StatefulWidget {
-  const ExchangeView({super.key});
+  final PageController pageController;
+  const ExchangeView({required this.pageController, super.key});
 
   @override
   State<ExchangeView> createState() => _ExchangeViewState();
 }
 
 class _ExchangeViewState extends State<ExchangeView> {
-  ExchangeCardData firstCard = ExchangeCardData(
-    imageLink: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
-    balance: '15000 FCFA',
-    cryptoName: 'USDT',
-    cryptoValue: '1 USD = 599 CFA',
+  Token firstCard = Token(
+    name: "USDT",
+    symbol: "USDT",
+    imageUrl: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
+    // balance: '15000 FCFA',
+    prix: '1 USD = 599 CFA',
   );
 
-  ExchangeCardData secondCard = ExchangeCardData(
-    imageLink:
-        'https://assets.stickpng.com/images/5a7593fc64538c292dec1bbf.png',
-    balance: '3 ETH',
-    cryptoName: 'ETH',
-    cryptoValue: '1 ETH = 879 999 CFA',
+  Token secondCard = Token(
+    name: "ETH",
+    symbol: "ETH",
+    imageUrl: 'https://assets.stickpng.com/images/5a7593fc64538c292dec1bbf.png',
+    // balance: '3 ETH',
+    prix: '1 ETH = 879 999 CFA',
   );
 
   @override
@@ -42,42 +45,60 @@ class _ExchangeViewState extends State<ExchangeView> {
                 SizedBox(
                   height: screenSize.height * 0.08,
                 ),
-                const Center(
-                  child: Text(
-                    'Exchange',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: screenSize.width * 0.02),
+                        child: GestureDetector(
+                          onTap: () {
+                            widget.pageController.jumpToPage(0);
+                            FocusScope.of(context).unfocus();
+                          },
+                          child: const Icon(Icons.arrow_back),
+                        ),
+                      ),
+                      const Text(
+                        'Exchange',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w700),
+                      ),
+                      // Add an empty container to balance the space
+                      Container(width: screenSize.width * 0.02),
+                    ],
                   ),
                 ),
                 SizedBox(
                   height: screenSize.height * 0.02,
                 ),
-
                 Padding(
                   padding: EdgeInsets.only(
                       left: screenSize.width * 0.03,
                       right: screenSize.width * 0.03),
-                  child: ExchangeCard(data: firstCard),
+                  child: ExchangeCard(
+                    data: firstCard,
+                    onTokenSelect: (Token token) {
+                      setState(() {
+                        firstCard = token;
+                      });
+                    },
+                    otherToken: firstCard,
+                  ),
                 ),
-                // SizedBox(
-                //   height: screenSize.height * 0.01,
-                // ),
                 Padding(
                     padding: EdgeInsets.only(
                         left: screenSize.width * 0.03,
                         right: screenSize.width * 0.03),
-                    child: ExchangeCard(data: secondCard)),
-                // Padding(
-                //   padding: EdgeInsets.only(
-                //       left: screenSize.width * 0.03,
-                //       right: screenSize.width * 0.03),
-                //   child: ExchangeCard(
-                //       title: "recevoir",
-                //       imageLink:
-                //           "https://assets.stickpng.com/images/5a7593fc64538c292dec1bbf.png",
-                //       cryptoName: "ETH",
-                //       cryptoValue: "1 ETH = 879 000",
-                //       balance: "0"),
-                // ),
+                    child: ExchangeCard(
+                      data: secondCard,
+                      onTokenSelect: (Token token) {
+                        setState(() {
+                          secondCard = token;
+                        });
+                      },
+                      otherToken: secondCard,
+                    )),
                 SizedBox(
                   height: screenSize.height * 0.01,
                 ),
@@ -131,29 +152,41 @@ class _ExchangeViewState extends State<ExchangeView> {
   }
 }
 
-class ExchangeCardData {
-  final String imageLink;
-  final String cryptoName;
-  final String cryptoValue;
-  final String balance;
-
-  ExchangeCardData({
-    required this.imageLink,
-    required this.cryptoName,
-    required this.cryptoValue,
-    required this.balance,
-  });
-}
-
 class ExchangeCard extends StatelessWidget {
-  final ExchangeCardData data;
-
-  const ExchangeCard({
-    required this.data,
-  });
+  final Token data;
+  final ValueChanged<Token> onTokenSelect;
+  final Token? otherToken;
+  const ExchangeCard(
+      {required this.data, required this.onTokenSelect, this.otherToken});
 
   @override
   Widget build(BuildContext context) {
+    // List<Token> mockTokens = [
+    //   Token(
+    //     name: "Bitcoin",
+    //     symbol: "BTC",
+    //     imageUrl: "https://cryptologos.cc/logos/bitcoin-btc-logo.png",
+    //     prix: "FCFA 16,762,462.61",
+    //     balance: "0",
+    //   ),
+    //   Token(
+    //     name: "Ethereum",
+    //     symbol: "ETH",
+    //     imageUrl:
+    //         "https://www.pngall.com/wp-content/uploads/10/Ethereum-Logo-PNG.png",
+    //     prix: "FCFA 0",
+    //     balance: "0",
+    //   ),
+    //   Token(
+    //     name: "USDT",
+    //     symbol: "USDT",
+    //     imageUrl: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
+    //     balance: '15000 FCFA',
+    //     prix: '1 USD = 599 CFA',
+    //   ),
+    // ];
+    Future<List<Token>> mockTokens = fetchTokenList();
+
     var screenSize = MediaQuery.of(context).size;
 
     return Padding(
@@ -191,7 +224,7 @@ class ExchangeCard extends StatelessWidget {
                         children: [
                           Image(
                             fit: BoxFit.contain,
-                            image: NetworkImage(data.imageLink),
+                            image: NetworkImage(data.imageUrl),
                           ),
                           SizedBox(
                             width: screenSize.width * 0.02,
@@ -200,11 +233,11 @@ class ExchangeCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                data.cryptoName,
+                                data.name,
                                 style: TextStyle(fontWeight: FontWeight.w700),
                               ),
                               Text(
-                                data.cryptoValue,
+                                data.prix,
                               ),
                             ],
                           ),
@@ -213,11 +246,123 @@ class ExchangeCard extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              print('select token');
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled:
+                                    true, // This allows the modal to be of custom size.
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                builder: (BuildContext context) {
+                                  return ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxHeight:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical:
+                                            MediaQuery.of(context).size.height *
+                                                0.02,
+                                        horizontal:
+                                            MediaQuery.of(context).size.width *
+                                                0.02,
+                                      ),
+                                      child: FutureBuilder<List<Token>>(
+                                        future: mockTokens,
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<List<Token>>
+                                                snapshot) {
+                                          if (snapshot.hasData) {
+                                            return ListView.builder(
+                                              itemCount: snapshot.data!.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                final asset =
+                                                    snapshot.data![index];
+                                                return ListTile(
+                                                  leading: Container(
+                                                    height: 35,
+                                                    width: 35,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16)),
+                                                    child: Image(
+                                                      image: NetworkImage(
+                                                          asset.imageUrl),
+                                                    ),
+                                                  ), // Replace with actual token icon
+                                                  title: Text(
+                                                    asset.name,
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ), //
+                                                  subtitle: Text(asset.symbol),
+                                                  trailing: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        '0',
+                                                        textAlign:
+                                                            TextAlign.right,
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 12.4),
+                                                      ),
+                                                      Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          const SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          Text(
+                                                            asset.prix,
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .black),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  onTap: () {
+                                                    // Handle the token selection here
+                                                    print(
+                                                        'Selected token: ${asset.name}');
+                                                    onTokenSelect(asset);
+                                                    Navigator.pop(
+                                                        context); // Close the modal
+                                                  },
+                                                );
+                                              },
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return Text('${snapshot.error}');
+                                          } else {
+                                            // By default, show a loading spinner.
+                                            return CircularProgressIndicator();
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
                             },
                             child: Image(
                               height: screenSize.height * 0.03,
-                              image: const NetworkImage(
+                              image: NetworkImage(
                                 "https://static.thenounproject.com/png/1123247-200.png",
                               ),
                             ),
@@ -237,7 +382,8 @@ class ExchangeCard extends StatelessWidget {
               child: TextField(
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 style: const TextStyle(fontSize: 18),
-                // keyboardType: TextInputType.number,
+                autofocus: true,
+                keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                     border: InputBorder.none, hintText: "0"),
               ),
@@ -248,7 +394,7 @@ class ExchangeCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(left: screenSize.width * 0.02),
               child: Text(
-                'Solde: ${data.balance}',
+                'Solde: ${0}',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             )
@@ -257,4 +403,25 @@ class ExchangeCard extends StatelessWidget {
       ),
     );
   }
+}
+
+// class Token {
+//   final String name;
+//   final String symbol;
+//   final String imageUrl;
+//   final String prix;
+//   final String balance;
+
+//   Token({
+//     required this.name,
+//     required this.symbol,
+//     required this.imageUrl,
+//     required this.prix,
+//     required this.balance,
+//   });
+// }
+
+Future<List<Token>> fetchTokenList() async {
+  final tokens = await Token.fetchTokens("http://127.0.0.1:5000/tokens");
+  return tokens;
 }
