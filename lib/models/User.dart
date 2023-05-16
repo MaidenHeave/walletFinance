@@ -22,3 +22,13 @@ class LoginResponse {
   factory LoginResponse.fromJson(Map<String, dynamic> json) =>
       LoginResponse(message: json['message'], token: json['access_token']);
 }
+
+class User {
+  final String? name;
+  final String? mobile;
+
+  User({this.name, this.mobile});
+
+  factory User.fromJson(Map<String, dynamic> json) =>
+      User(name: json["name"], mobile: json['mobile']);
+}
