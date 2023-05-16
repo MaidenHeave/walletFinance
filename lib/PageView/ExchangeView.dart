@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wallet/services/login.dart';
 import 'package:wallet/widgets/widgets.dart';
 import 'package:wallet/models/models.dart';
+import 'package:http/http.dart' as http;
 
 class ExchangeView extends StatefulWidget {
   final PageController pageController;
@@ -12,12 +16,6 @@ class ExchangeView extends StatefulWidget {
 }
 
 class _ExchangeViewState extends State<ExchangeView> {
-  // Token firstCard = Token(
-  //   name: "USDT",
-  //   symbol: "USDT",
-  //   imageUrl: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
-  //   prix: '${fetchTokenList()[]}',
-  // );
   bool isInitialized = false;
   late Token firstCard;
 
@@ -35,7 +33,7 @@ class _ExchangeViewState extends State<ExchangeView> {
     fetchTokenList().then((tokens) {
       if (tokens.isNotEmpty) {
         setState(() {
-          firstCard = tokens.first;
+          firstCard = tokens[2];
           isInitialized = true;
         });
       }
@@ -303,7 +301,7 @@ class ExchangeCard extends StatelessWidget {
                                                             .center,
                                                     children: [
                                                       Text(
-                                                        asset.prix,
+                                                        '${asset.prix} CFA',
                                                         textAlign:
                                                             TextAlign.right,
                                                         style: const TextStyle(
@@ -311,24 +309,57 @@ class ExchangeCard extends StatelessWidget {
                                                                 FontWeight.bold,
                                                             fontSize: 12.4),
                                                       ),
-                                                      const Row(
+                                                      SizedBox(
+                                                        width: 10,
+                                                        child: FutureBuilder<
+                                                            String>(
+                                                          future: fetchBalance(
+                                                              asset.symbol),
+                                                          builder: (BuildContext
+                                                                  context,
+                                                              AsyncSnapshot<
+                                                                      String>
+                                                                  result) {
+                                                            if (result
+                                                                .hasData) {
+                                                              return Text(
+                                                                '${result.data} ${asset.symbol}',
+                                                                style: TextStyle(
+                                                                    fontSize: 3,
+                                                                    color: Colors
+                                                                        .black),
+                                                              );
+                                                            } else if (result
+                                                                .hasError) {
+                                                              print(
+                                                                  'result is $result');
+                                                              return Text(
+                                                                'Error: ${result.error}',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        3),
+                                                              );
+                                                            } else {
+                                                              return Text('hey',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          2));
+                                                            }
+                                                          },
+                                                        ),
+                                                      ),
+                                                      Row(
                                                         mainAxisSize:
                                                             MainAxisSize.min,
                                                         children: [
                                                           SizedBox(
                                                             width: 5,
                                                           ),
-                                                          Text(
-                                                            '0',
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                color: Colors
-                                                                    .black),
-                                                          ),
                                                         ],
                                                       ),
                                                     ],
                                                   ),
+
                                                   onTap: () {
                                                     // Handle the token selection here
                                                     print(
@@ -621,5 +652,30 @@ class ExchangeMockCard extends StatelessWidget {
 
 Future<List<Token>> fetchTokenList() async {
   final tokens = await Token.fetchTokens("http://127.0.0.1:5000/tokens");
+
   return tokens;
+}
+
+Future<String> fetchBalance(String symbol) async {
+  String? token = await fetchToken(); // Fetch the stored token
+  print(token.toString());
+  if (token == null) {
+    throw Exception('User is not authenticated');
+  }
+
+  final http.Response response = await http.get(
+    Uri.parse('http://127.0.0.1:5000/balance/$symbol'),
+    headers: {
+      'Authorization': 'Bearer $token'
+    }, // Include the token in the request headers
+  );
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> json = jsonDecode(response.body);
+    return json['balance'];
+  } else {
+    print('Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+    throw Exception('Failed to load balance');
+  }
 }
