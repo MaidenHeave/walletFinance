@@ -414,6 +414,7 @@ class ExchangeCard extends StatelessWidget {
             SizedBox(
               height: screenSize.height * 0.01,
             ),
+            // user
             Padding(
               padding: EdgeInsets.only(left: screenSize.width * 0.02),
               child: FutureBuilder<String>(

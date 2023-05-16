@@ -1,10 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/pages/pages.dart';
 
 import 'package:wallet/assets/paymentUrls.dart';
+import 'package:wallet/services/login.dart';
+import 'package:http/http.dart' as http;
 
-class BalanceSection extends StatelessWidget {
+class BalanceSection extends StatefulWidget {
+  @override
+  State<BalanceSection> createState() => _BalanceSectionState();
+}
+
+class _BalanceSectionState extends State<BalanceSection> {
   @override
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
@@ -80,19 +89,39 @@ class BalanceSection extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: const [
-                    Text(
+                  children: [
+                    const Text(
                       'Solde',
                       style: TextStyle(fontWeight: FontWeight.w300),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 4,
                     ),
-                    Text(
-                      "1.000.000",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                    ),
+                    FutureBuilder<String>(
+                      future: fetchTotalBalance(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.hasData) {
+                          var string = snapshot.data!;
+                          return Text(
+                            string,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 22),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text(
+                            'Error: ${snapshot.error}',
+                            style: const TextStyle(fontSize: 3),
+                          );
+                        } else {
+                          return const Text(
+                            '0',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 22),
+                          );
+                        }
+                      },
+                    )
                   ],
                 ),
                 SizedBox(
@@ -406,5 +435,26 @@ class DepositMethod extends StatelessWidget {
         )
       ],
     );
+  }
+}
+
+Future<String> fetchTotalBalance() async {
+  String? token = await fetchToken(); // Fetch the stored token
+  if (token == null) {
+    throw Exception('User is not authenticated');
+  }
+
+  final http.Response response = await http.get(
+    Uri.parse('http://127.0.0.1:5000/balance'),
+    headers: {
+      'Authorization': 'Bearer $token'
+    }, // Include the token in the request headers
+  );
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> json = jsonDecode(response.body);
+    return json['total_balance'];
+  } else {
+    throw Exception('Failed to load balance');
   }
 }
