@@ -320,7 +320,7 @@ class ExchangeCard extends StatelessWidget {
                                                           if (result.hasData) {
                                                             return Text(
                                                               '${result.data} ${asset.symbol}',
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                   fontSize: 12,
                                                                   color: Colors
                                                                       .black),
@@ -331,18 +331,23 @@ class ExchangeCard extends StatelessWidget {
                                                                 'result is ${result.toString()}');
                                                             return Text(
                                                               'Error: ${result.error}',
-                                                              style: TextStyle(
-                                                                  fontSize: 3),
+                                                              style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          3),
                                                             );
                                                           } else {
-                                                            return Text('hey',
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        2));
+                                                            return Text(
+                                                              '0 ${asset.symbol}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          12),
+                                                            );
                                                           }
                                                         },
                                                       ),
-                                                      Row(
+                                                      const Row(
                                                         mainAxisSize:
                                                             MainAxisSize.min,
                                                         children: [
@@ -411,9 +416,22 @@ class ExchangeCard extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(left: screenSize.width * 0.02),
-              child: Text(
-                'Solde: ${0}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              child: FutureBuilder<String>(
+                future: fetchBalance(data.symbol),
+                builder: (BuildContext context, AsyncSnapshot<String> result) {
+                  if (result.hasData) {
+                    return Text(
+                      'Solde: ${result.data} ${data.symbol}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    );
+                  } else if (result.hasError) {
+                    return Text('Solde: 0 ${data.symbol}',
+                        style: const TextStyle(fontWeight: FontWeight.bold));
+                  } else {
+                    return Text('Solde: 0 ${data.symbol}',
+                        style: const TextStyle(fontWeight: FontWeight.bold));
+                  }
+                },
               ),
             )
           ],
