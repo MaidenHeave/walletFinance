@@ -309,44 +309,38 @@ class ExchangeCard extends StatelessWidget {
                                                                 FontWeight.bold,
                                                             fontSize: 12.4),
                                                       ),
-                                                      SizedBox(
-                                                        width: 10,
-                                                        child: FutureBuilder<
-                                                            String>(
-                                                          future: fetchBalance(
-                                                              asset.symbol),
-                                                          builder: (BuildContext
-                                                                  context,
-                                                              AsyncSnapshot<
-                                                                      String>
-                                                                  result) {
-                                                            if (result
-                                                                .hasData) {
-                                                              return Text(
-                                                                '${result.data} ${asset.symbol}',
-                                                                style: TextStyle(
-                                                                    fontSize: 3,
-                                                                    color: Colors
-                                                                        .black),
-                                                              );
-                                                            } else if (result
-                                                                .hasError) {
-                                                              print(
-                                                                  'result is $result');
-                                                              return Text(
-                                                                'Error: ${result.error}',
+                                                      FutureBuilder<String>(
+                                                        future: fetchBalance(
+                                                            asset.symbol),
+                                                        builder: (BuildContext
+                                                                context,
+                                                            AsyncSnapshot<
+                                                                    String>
+                                                                result) {
+                                                          if (result.hasData) {
+                                                            return Text(
+                                                              '${result.data} ${asset.symbol}',
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .black),
+                                                            );
+                                                          } else if (result
+                                                              .hasError) {
+                                                            print(
+                                                                'result is ${result.toString()}');
+                                                            return Text(
+                                                              'Error: ${result.error}',
+                                                              style: TextStyle(
+                                                                  fontSize: 3),
+                                                            );
+                                                          } else {
+                                                            return Text('hey',
                                                                 style: TextStyle(
                                                                     fontSize:
-                                                                        3),
-                                                              );
-                                                            } else {
-                                                              return Text('hey',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          2));
-                                                            }
-                                                          },
-                                                        ),
+                                                                        2));
+                                                          }
+                                                        },
                                                       ),
                                                       Row(
                                                         mainAxisSize:
