@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:wallet/home.dart';
+import 'package:wallet/services/login.dart';
+
+import 'models/models.dart';
 
 extension ExtString on String {
   bool get isValidPassword {
-    final passwordRegExp = RegExp(
-        r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$');
+    // final passwordRegExp = RegExp(
+    //     r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$');
+    final passwordRegExp = RegExp(r'^$');
     return passwordRegExp.hasMatch(this);
   }
 
@@ -12,7 +17,8 @@ extension ExtString on String {
   }
 
   bool get isValidPhone {
-    final phoneRegExp = RegExp(r"^(?:0[7015])[0-9]{8}$");
+    // final phoneRegExp = RegExp(r"^(?:0[7015])[0-9]{8}$");
+    final phoneRegExp = RegExp(r"^$");
     return phoneRegExp.hasMatch(this);
   }
 }
@@ -27,7 +33,6 @@ class LoginPageState extends State<LoginPage> {
   bool isMobileNameOk = false;
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _password1Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -98,11 +103,11 @@ class LoginPageState extends State<LoginPage> {
                             children: [
                               TextFormField(
                                 controller: _mobileController,
-                                validator: (val) {
-                                  if (!val!.isValidPhone) {
-                                    return "Entrer un numero mobile correct";
-                                  }
-                                },
+                                // validator: (val) {
+                                //   if (!val!.isValidPhone) {
+                                //     return "Entrer un numero mobile correct";
+                                //   }
+                                // },
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.all(8),
                                   hintText: 'Entrer numero mobile *',
@@ -126,11 +131,11 @@ class LoginPageState extends State<LoginPage> {
                               ),
                               TextFormField(
                                 controller: _passwordController,
-                                validator: (val) {
-                                  if (!val!.isValidPassword) {
-                                    return "Entrer un mot de passe correct";
-                                  }
-                                },
+                                // validator: (val) {
+                                //   if (!val!.isValidPassword) {
+                                //     return "Entrer un mot de passe correct";
+                                //   }
+                                // },
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.all(8),
                                   hintText: 'Entrer mot de passe *',
@@ -150,43 +155,31 @@ class LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               const SizedBox(
-                                height: 15,
-                              ),
-                              TextFormField(
-                                controller: _password1Controller,
-                                validator: (val) {
-                                  if (_passwordController.text !=
-                                      _password1Controller.text) {
-                                    return "Le mot de passe n'est pas le meme";
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.all(8),
-                                  hintText: 'Repeter mot de passe *',
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.4, color: Colors.black),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.4, color: Colors.black),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.4, color: Colors.black),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.4, color: Colors.black),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
                                 height: 20,
                               ),
-                              InkWell(
-                                onTap: () {
-                                  if (_formKey.currentState!.validate()) {}
+                              GestureDetector(
+                                onTap: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    LoginRequest request = LoginRequest(
+                                      mobile: _mobileController.text,
+                                      password: _passwordController.text,
+                                    );
+                                    // Send request
+                                    try {
+                                      LoginResponse response =
+                                          await login(request);
+
+                                      storeToken(response.token.toString());
+                                      // TODO: Handle successful login (e.g. navigate to another screen)
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => WalletHome()),
+                                      );
+                                    } catch (e) {
+                                      // TODO: Handle error (e.g. show an alert dialog with the error message)
+                                    }
+                                  }
                                 },
                                 child: Container(
                                   height: 60,
@@ -197,7 +190,7 @@ class LoginPageState extends State<LoginPage> {
                                   ),
                                   child: const Center(
                                     child: Text(
-                                      'Creer un compte',
+                                      'Se connecter',
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 16),
                                     ),

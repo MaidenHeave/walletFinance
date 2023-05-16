@@ -2,26 +2,30 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../services/login.dart';
+
 class Token {
   final String name;
   final String symbol;
   final String imageUrl;
   final String prix;
+  final String? balance;
 
   Token({
     required this.name,
     required this.symbol,
     required this.imageUrl,
     required this.prix,
+    this.balance,
   });
 
   factory Token.fromJson(Map<String, dynamic> json) {
     return Token(
-      name: json["name"],
-      symbol: json["symbol"],
-      imageUrl: json["symbol_url"],
-      prix: json["price"],
-    );
+        name: json["name"],
+        symbol: json["symbol"],
+        imageUrl: json["symbol_url"],
+        prix: json["price"],
+        balance: json['balance']);
   }
 
   static List<Token> fromJsonList(List<dynamic> jsonList) {
