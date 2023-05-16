@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:wallet/PageView/ExchangeView.dart';
 import 'package:wallet/PageView/HomeView.dart';
-import 'widgets/widgets.dart';
 
 class WalletHome extends StatefulWidget {
   @override

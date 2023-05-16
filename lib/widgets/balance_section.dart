@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/pages/pages.dart';
-
 import 'package:wallet/assets/paymentUrls.dart';
 import 'package:wallet/services/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import '../models/models.dart';
 
 class BalanceSection extends StatefulWidget {
   @override
@@ -14,6 +15,20 @@ class BalanceSection extends StatefulWidget {
 }
 
 class _BalanceSectionState extends State<BalanceSection> {
+  @override
+  void initState() async {
+    // TODO: implement initState
+    super.initState();
+    WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("authToken");
+    var name = prefs.getString("name");
+    var mobile = prefs.getString("mobile");
+    if (name == null || mobile == null) {
+      var response = await fetchUserData(token!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
@@ -84,7 +99,7 @@ class _BalanceSectionState extends State<BalanceSection> {
             padding: const EdgeInsets.only(left: 20, top: 4),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,15 +139,12 @@ class _BalanceSectionState extends State<BalanceSection> {
                     )
                   ],
                 ),
-                SizedBox(
-                  width: screensize.width * 0.50,
-                ),
                 Padding(
                   padding: EdgeInsets.only(right: screensize.width * 0.03),
-                  child: Column(
+                  child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         '+200%',
                         style: TextStyle(
@@ -456,5 +468,31 @@ Future<String> fetchTotalBalance() async {
     return json['total_balance'];
   } else {
     throw Exception('Failed to load balance');
+  }
+}
+
+Future<User> fetchUserData(String token) async {
+  final response = await http.get(
+    Uri.parse('http://your_server_url/user'),
+    // Send authorization headers to the backend
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer $token",
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // If the server returns a 200 OK response,
+    // then parse the JSON.
+    Map<String, dynamic> json = jsonDecode(response.body);
+    return User(
+      name: json['name'],
+      mobile: json['mobile'],
+    );
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load user data');
   }
 }
