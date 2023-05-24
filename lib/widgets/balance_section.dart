@@ -15,18 +15,23 @@ class BalanceSection extends StatefulWidget {
 }
 
 class _BalanceSectionState extends State<BalanceSection> {
+  String _name = '';
+  String _mobile = '';
+
   @override
-  void initState() async {
-    // TODO: implement initState
+  void initState() {
     super.initState();
-    WidgetsFlutterBinding.ensureInitialized();
+    _fetchData();
+  }
+
+  _fetchData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString("authToken");
-    var name = prefs.getString("name");
-    var mobile = prefs.getString("mobile");
-    if (name == null || mobile == null) {
-      var response = await fetchUserData(token!);
-    }
+    String? token = prefs.getString('authToken');
+    User user = await fetchUserData(token!);
+    setState(() {
+      _name = user.name!;
+      _mobile = user.mobile!;
+    });
   }
 
   @override
@@ -66,18 +71,18 @@ class _BalanceSectionState extends State<BalanceSection> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: screensize.width * 0.30,
-                        child: const Text(
-                          "Joshua Guessennd",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        width: MediaQuery.of(context).size.width * 0.30,
+                        child: Text(
+                          _name,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                       const SizedBox(
                         height: 4,
                       ),
-                      const Text(
-                        "01 00 00 00 00",
-                        style: TextStyle(fontWeight: FontWeight.w300),
+                      Text(
+                        _mobile,
+                        style: const TextStyle(fontWeight: FontWeight.w300),
                       ),
                     ],
                   ),
@@ -472,9 +477,23 @@ Future<String> fetchTotalBalance() async {
 }
 
 Future<User> fetchUserData(String token) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // Get cached data from shared preferences
+  String cachedName = prefs.getString('name') ?? '';
+  String cachedMobile = prefs.getString('mobile') ?? '';
+
+  // If the cache is not empty, return the User object with cached data
+  if (cachedName.isNotEmpty && cachedMobile.isNotEmpty) {
+    return User(
+      name: cachedName,
+      mobile: cachedMobile,
+    );
+  }
+
+  // Fetch data from server
   final response = await http.get(
-    Uri.parse('http://your_server_url/user'),
-    // Send authorization headers to the backend
+    Uri.parse('http://127.0.0.1:5000/user'),
     headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -483,16 +502,17 @@ Future<User> fetchUserData(String token) async {
   );
 
   if (response.statusCode == 200) {
-    // If the server returns a 200 OK response,
-    // then parse the JSON.
     Map<String, dynamic> json = jsonDecode(response.body);
+
+    // Save data to shared preferences
+    await prefs.setString('name', json['name']);
+    await prefs.setString('mobile', json['mobile']);
+
     return User(
       name: json['name'],
       mobile: json['mobile'],
     );
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
     throw Exception('Failed to load user data');
   }
 }
