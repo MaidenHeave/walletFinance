@@ -193,46 +193,6 @@ class _AssetSectionState extends State<AssetSection> {
                 }
               },
             ),
-            // child: FutureBuilder<List<Token>>(
-            //   future: mockTokens,
-            //   builder:
-            //       (BuildContext context, AsyncSnapshot<List<Token>> snapshot) {
-            //     if (snapshot.hasData) {
-            //       return ListView.builder(
-            //         padding: const EdgeInsets.only(top: 20),
-            //         itemCount: snapshot.data!.length,
-            //         itemBuilder: (BuildContext context, int index) {
-            //           final asset = snapshot.data![index];
-            //           return Column(
-            //             children: [
-            //               Actif(
-            //                 asset.name,
-            //                 asset.symbol,
-            //                 asset.prix,
-            //                 '0',
-            //                 asset.imageUrl,
-            //               ),
-            //               const SizedBox(
-            //                 height: 1,
-            //               ),
-            //               const Padding(
-            //                 padding: EdgeInsets.only(left: 20, right: 20),
-            //                 child: Divider(
-            //                   thickness: 0.8,
-            //                 ),
-            //               ),
-            //             ],
-            //           );
-            //         },
-            //       );
-            //     } else if (snapshot.hasError) {
-            //       return Text('${snapshot.error}');
-            //     } else {
-            //       // By default, show a loading spinner.
-            //       return Center(child: const CircularProgressIndicator());
-            //     }
-            //   },
-            // ),
           ),
         ],
       ),
