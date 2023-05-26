@@ -7,80 +7,13 @@ class AssetSection extends StatefulWidget {
 }
 
 class _AssetSectionState extends State<AssetSection> {
-  Future<List<Token>> mockTokens = fetchTokenList();
-  final List<Map<String, dynamic>> assets = [
-    {
-      "name": "Bitcoin",
-      "symbol": "BTC",
-      "prix": "FCFA 16,762,462.61",
-      "variation": "-28,000",
-      "url": "https://cryptologos.cc/logos/bitcoin-btc-logo.png",
-    },
-    {
-      "name": "Ethereum",
-      "symbol": "ETH",
-      "prix": "FCFA 1,106,679.00",
-      "variation": "-14,000",
-      "url":
-          "https://www.pngall.com/wp-content/uploads/10/Ethereum-Logo-PNG.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "LINK",
-      "symbol": "LNK",
-      "prix": "FCFA 4178",
-      "variation": "+ 344",
-      "url":
-          "https://seeklogo.com/images/C/chainlink-link-logo-CDF7095A43-seeklogo.com.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-  ];
+  late Future<List<Token>> mockTokens;
+
+  @override
+  void initState() {
+    super.initState();
+    mockTokens = fetchTokenList(); // Fetch tokens in initState.
+  }
 
   bool tri = false;
 

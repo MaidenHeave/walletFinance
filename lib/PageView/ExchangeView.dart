@@ -33,7 +33,7 @@ class _ExchangeViewState extends State<ExchangeView> {
     fetchTokenList().then((tokens) {
       if (tokens.isNotEmpty) {
         setState(() {
-          firstCard = tokens[2];
+          firstCard = tokens.firstWhere((token) => token.symbol == "USDT");
           isInitialized = true;
         });
       }
@@ -327,8 +327,6 @@ class ExchangeCard extends StatelessWidget {
                                                             );
                                                           } else if (result
                                                               .hasError) {
-                                                            print(
-                                                                'result is ${result.toString()}');
                                                             return Text(
                                                               'Error: ${result.error}',
                                                               style:
@@ -361,8 +359,6 @@ class ExchangeCard extends StatelessWidget {
 
                                                   onTap: () {
                                                     // Handle the token selection here
-                                                    print(
-                                                        'Selected token: ${asset.name}');
                                                     onTokenSelect(asset);
                                                     Navigator.pop(
                                                         context); // Close the modal
@@ -568,13 +564,51 @@ class ExchangeMockCard extends StatelessWidget {
                                                             .center,
                                                     children: [
                                                       Text(
-                                                        asset.prix,
+                                                        '${asset.prix} CFA',
                                                         textAlign:
                                                             TextAlign.right,
                                                         style: const TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             fontSize: 12.4),
+                                                      ),
+                                                      FutureBuilder<String>(
+                                                        future: fetchBalance(
+                                                            asset.symbol),
+                                                        builder: (BuildContext
+                                                                context,
+                                                            AsyncSnapshot<
+                                                                    String>
+                                                                result) {
+                                                          if (result.hasData) {
+                                                            return Text(
+                                                              '${result.data} ${asset.symbol}',
+                                                              style: const TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .black),
+                                                            );
+                                                          } else if (result
+                                                              .hasError) {
+                                                            print(
+                                                                'result is ${result.toString()}');
+                                                            return Text(
+                                                              'Error: ${result.error}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          3),
+                                                            );
+                                                          } else {
+                                                            return Text(
+                                                              '0 ${asset.symbol}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          12),
+                                                            );
+                                                          }
+                                                        },
                                                       ),
                                                       const Row(
                                                         mainAxisSize:
@@ -583,25 +617,10 @@ class ExchangeMockCard extends StatelessWidget {
                                                           SizedBox(
                                                             width: 5,
                                                           ),
-                                                          Text(
-                                                            '0',
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                color: Colors
-                                                                    .black),
-                                                          ),
                                                         ],
                                                       ),
                                                     ],
                                                   ),
-                                                  // onTap: () {
-                                                  //   // Handle the token selection here
-                                                  //   print(
-                                                  //       'Selected token: ${asset.name}');
-                                                  //   onTokenSelect(asset);
-                                                  //   Navigator.pop(
-                                                  //       context); // Close the modal
-                                                  // },
                                                 );
                                               },
                                             );
@@ -671,7 +690,6 @@ Future<List<Token>> fetchTokenList() async {
 
 Future<String> fetchBalance(String symbol) async {
   String? token = await fetchToken(); // Fetch the stored token
-  print(token.toString());
   if (token == null) {
     throw Exception('User is not authenticated');
   }
@@ -687,8 +705,6 @@ Future<String> fetchBalance(String symbol) async {
     Map<String, dynamic> json = jsonDecode(response.body);
     return json['balance'];
   } else {
-    print('Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
     throw Exception('Failed to load balance');
   }
 }
