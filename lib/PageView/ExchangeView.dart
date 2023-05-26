@@ -478,23 +478,6 @@ class ExchangeMockCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Image(
-                          //   fit: BoxFit.contain,
-                          //   image: NetworkImage(data.imageUrl),
-                          // ),
-                          SizedBox(
-                            width: screenSize.width * 0.02,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Text(
-                              //   d,
-                              //   style: TextStyle(fontWeight: FontWeight.w700),
-                              // ),
-                              // Text('1 ${data.symbol} = ${data.prix} CFA'),
-                            ],
-                          ),
                           SizedBox(
                             width: screenSize.width * 0.03,
                           ),
@@ -689,6 +672,9 @@ Future<List<Token>> fetchTokenList() async {
 }
 
 Future<String> fetchBalance(String symbol) async {
+  if (symbol.isEmpty) {
+    return '0';
+  }
   String? token = await fetchToken(); // Fetch the stored token
   if (token == null) {
     throw Exception('User is not authenticated');
