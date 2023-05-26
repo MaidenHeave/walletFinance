@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wallet/models/TokenModel.dart';
 
 class AssetSection extends StatefulWidget {
   @override
@@ -6,6 +7,7 @@ class AssetSection extends StatefulWidget {
 }
 
 class _AssetSectionState extends State<AssetSection> {
+  Future<List<Token>> mockTokens = fetchTokenList();
   final List<Map<String, dynamic>> assets = [
     {
       "name": "Bitcoin",
@@ -163,31 +165,44 @@ class _AssetSectionState extends State<AssetSection> {
 
           // Add an Expanded widget to wrap the Column
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(top: 20),
-              itemCount: assets.length,
-              itemBuilder: (BuildContext context, int index) {
-                final asset = assets[index];
-                return Column(
-                  children: [
-                    Actif(
-                      asset['name'],
-                      asset['symbol'],
-                      asset['prix'],
-                      asset['variation'],
-                      asset['url'],
-                    ),
-                    const SizedBox(
-                      height: 1,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      child: Divider(
-                        thickness: 0.8,
-                      ),
-                    ),
-                  ],
-                );
+            child: FutureBuilder<List<Token>>(
+              future: mockTokens,
+              builder:
+                  (BuildContext context, AsyncSnapshot<List<Token>> snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    padding: const EdgeInsets.only(top: 20),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final asset = snapshot.data![index];
+                      return Column(
+                        children: [
+                          Actif(
+                            asset.name,
+                            asset.symbol,
+                            asset.prix,
+                            '0',
+                            asset.imageUrl,
+                          ),
+                          const SizedBox(
+                            height: 1,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 20, right: 20),
+                            child: Divider(
+                              thickness: 0.8,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                } else {
+                  // By default, show a loading spinner.
+                  return Center(child: const CircularProgressIndicator());
+                }
               },
             ),
           ),
@@ -228,7 +243,7 @@ class Actif extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            prix,
+            "$prix CFA",
             textAlign: TextAlign.right,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12.4),
           ),
@@ -252,4 +267,10 @@ class Actif extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<List<Token>> fetchTokenList() async {
+  final tokens = await Token.fetchTokens("http://127.0.0.1:5000/tokens");
+
+  return tokens;
 }
