@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:wallet/models/TokenModel.dart';
+
+import '../services/balance.dart';
 
 class AssetSection extends StatefulWidget {
   @override
@@ -7,80 +10,13 @@ class AssetSection extends StatefulWidget {
 }
 
 class _AssetSectionState extends State<AssetSection> {
-  Future<List<Token>> mockTokens = fetchTokenList();
-  final List<Map<String, dynamic>> assets = [
-    {
-      "name": "Bitcoin",
-      "symbol": "BTC",
-      "prix": "FCFA 16,762,462.61",
-      "variation": "-28,000",
-      "url": "https://cryptologos.cc/logos/bitcoin-btc-logo.png",
-    },
-    {
-      "name": "Ethereum",
-      "symbol": "ETH",
-      "prix": "FCFA 1,106,679.00",
-      "variation": "-14,000",
-      "url":
-          "https://www.pngall.com/wp-content/uploads/10/Ethereum-Logo-PNG.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "LINK",
-      "symbol": "LNK",
-      "prix": "FCFA 4178",
-      "variation": "+ 344",
-      "url":
-          "https://seeklogo.com/images/C/chainlink-link-logo-CDF7095A43-seeklogo.com.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-    {
-      "name": "Arbitrum",
-      "symbol": "ARB",
-      "prix": "FCFA 800",
-      "variation": "-14,000",
-      "url":
-          "https://altcoinsbox.com/wp-content/uploads/2023/03/arbitrum-logo.png",
-    },
-  ];
+  late Future<List<Token>> mockTokens;
+
+  @override
+  void initState() {
+    super.initState();
+    mockTokens = fetchTokenList(); // Fetch tokens in initState.
+  }
 
   bool tri = false;
 
@@ -181,7 +117,6 @@ class _AssetSectionState extends State<AssetSection> {
                             asset.name,
                             asset.symbol,
                             asset.prix,
-                            '0',
                             asset.imageUrl,
                           ),
                           const SizedBox(
@@ -200,8 +135,62 @@ class _AssetSectionState extends State<AssetSection> {
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 } else {
-                  // By default, show a loading spinner.
-                  return Center(child: const CircularProgressIndicator());
+                  // Display the shimmer effect
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(top: 20),
+                      itemCount:
+                          10, // You can adjust the number of shimmering lines here
+                      itemBuilder: (_, __) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              width: 48.0,
+                              height: 48.0,
+                              color: Colors.white,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    width: double.infinity,
+                                    height: 8.0,
+                                    color: Colors.white,
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 2.0),
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 8.0,
+                                    color: Colors.white,
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 2.0),
+                                  ),
+                                  Container(
+                                    width: 40.0,
+                                    height: 8.0,
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
                 }
               },
             ),
@@ -216,10 +205,9 @@ class Actif extends StatelessWidget {
   String name;
   String symbol;
   String prix;
-  String variation;
   String url;
 
-  Actif(this.name, this.symbol, this.prix, this.variation, this.url, {Key? key})
+  Actif(this.name, this.symbol, this.prix, this.url, {Key? key})
       : super(key: key);
 
   @override
@@ -242,26 +230,64 @@ class Actif extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            "$prix CFA",
-            textAlign: TextAlign.right,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12.4),
+          FutureBuilder<String>(
+            future: fetchBalance(symbol),
+            builder: (BuildContext context, AsyncSnapshot<String> result) {
+              if (result.hasData) {
+                return Text(
+                  '${result.data} $symbol',
+                  style: const TextStyle(
+                      fontSize: 12.5, fontWeight: FontWeight.bold),
+                );
+              } else if (result.hasError) {
+                return Text(
+                  'Error: ${result.error}',
+                  style: const TextStyle(fontSize: 3),
+                );
+              } else {
+                return Text(
+                  '0 $symbol',
+                  style: const TextStyle(
+                      fontSize: 12.5, fontWeight: FontWeight.bold),
+                );
+              }
+            },
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                variation,
-                style: const TextStyle(fontSize: 10),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              const Text(
-                "-2.28%",
-                style: TextStyle(fontSize: 10, color: Colors.red),
-              ),
-            ],
+          const SizedBox(
+            height: 2.5,
+          ),
+          FutureBuilder<String>(
+            future: fetchBalance(symbol),
+            builder: (BuildContext context, AsyncSnapshot<String> result) {
+              if (result.hasData) {
+                // Convert both balance and prix to double to perform multiplication
+                var balance = double.parse(result.data!);
+                var assetPrice = double.parse(prix);
+                var totalValue = balance * assetPrice;
+
+                String totalValueStr = totalValue == 0
+                    ? totalValue
+                        .toStringAsFixed(0) // No decimals if totalValue is 0
+                    : totalValue.toStringAsFixed(2);
+
+                return Text(
+                  '$totalValueStr CFA',
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(fontSize: 12.4),
+                );
+              } else if (result.hasError) {
+                return Text(
+                  'Error: ${result.error}',
+                  style: const TextStyle(fontSize: 3),
+                );
+              } else {
+                return const Text(
+                  '0 CFA',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 12.4),
+                );
+              }
+            },
           ),
         ],
       ),
