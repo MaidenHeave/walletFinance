@@ -653,7 +653,7 @@ class ExchangeMockCard extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(left: screenSize.width * 0.02),
-              child: Text(
+              child: const Text(
                 'Solde: ${0}',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:wallet/models/TokenModel.dart';
 
+import '../services/balance.dart';
+
 class AssetSection extends StatefulWidget {
   @override
   State<AssetSection> createState() => _AssetSectionState();
@@ -115,7 +117,6 @@ class _AssetSectionState extends State<AssetSection> {
                             asset.name,
                             asset.symbol,
                             asset.prix,
-                            '0',
                             asset.imageUrl,
                           ),
                           const SizedBox(
@@ -204,10 +205,9 @@ class Actif extends StatelessWidget {
   String name;
   String symbol;
   String prix;
-  String variation;
   String url;
 
-  Actif(this.name, this.symbol, this.prix, this.variation, this.url, {Key? key})
+  Actif(this.name, this.symbol, this.prix, this.url, {Key? key})
       : super(key: key);
 
   @override
@@ -230,26 +230,64 @@ class Actif extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            "$prix CFA",
-            textAlign: TextAlign.right,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12.4),
+          FutureBuilder<String>(
+            future: fetchBalance(symbol),
+            builder: (BuildContext context, AsyncSnapshot<String> result) {
+              if (result.hasData) {
+                return Text(
+                  '${result.data} $symbol',
+                  style: const TextStyle(
+                      fontSize: 12.5, fontWeight: FontWeight.bold),
+                );
+              } else if (result.hasError) {
+                return Text(
+                  'Error: ${result.error}',
+                  style: const TextStyle(fontSize: 3),
+                );
+              } else {
+                return Text(
+                  '0 $symbol',
+                  style: const TextStyle(
+                      fontSize: 12.5, fontWeight: FontWeight.bold),
+                );
+              }
+            },
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                variation,
-                style: const TextStyle(fontSize: 10),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              const Text(
-                "-2.28%",
-                style: TextStyle(fontSize: 10, color: Colors.red),
-              ),
-            ],
+          const SizedBox(
+            height: 2.5,
+          ),
+          FutureBuilder<String>(
+            future: fetchBalance(symbol),
+            builder: (BuildContext context, AsyncSnapshot<String> result) {
+              if (result.hasData) {
+                // Convert both balance and prix to double to perform multiplication
+                var balance = double.parse(result.data!);
+                var assetPrice = double.parse(prix);
+                var totalValue = balance * assetPrice;
+
+                String totalValueStr = totalValue == 0
+                    ? totalValue
+                        .toStringAsFixed(0) // No decimals if totalValue is 0
+                    : totalValue.toStringAsFixed(2);
+
+                return Text(
+                  '$totalValueStr CFA',
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(fontSize: 12.4),
+                );
+              } else if (result.hasError) {
+                return Text(
+                  'Error: ${result.error}',
+                  style: const TextStyle(fontSize: 3),
+                );
+              } else {
+                return const Text(
+                  '0 CFA',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 12.4),
+                );
+              }
+            },
           ),
         ],
       ),
