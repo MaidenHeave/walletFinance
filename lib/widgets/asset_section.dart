@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:wallet/models/TokenModel.dart';
 
 class AssetSection extends StatefulWidget {
@@ -133,11 +134,105 @@ class _AssetSectionState extends State<AssetSection> {
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 } else {
-                  // By default, show a loading spinner.
-                  return Center(child: const CircularProgressIndicator());
+                  // Display the shimmer effect
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(top: 20),
+                      itemCount:
+                          10, // You can adjust the number of shimmering lines here
+                      itemBuilder: (_, __) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              width: 48.0,
+                              height: 48.0,
+                              color: Colors.white,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    width: double.infinity,
+                                    height: 8.0,
+                                    color: Colors.white,
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 2.0),
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 8.0,
+                                    color: Colors.white,
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 2.0),
+                                  ),
+                                  Container(
+                                    width: 40.0,
+                                    height: 8.0,
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
                 }
               },
             ),
+            // child: FutureBuilder<List<Token>>(
+            //   future: mockTokens,
+            //   builder:
+            //       (BuildContext context, AsyncSnapshot<List<Token>> snapshot) {
+            //     if (snapshot.hasData) {
+            //       return ListView.builder(
+            //         padding: const EdgeInsets.only(top: 20),
+            //         itemCount: snapshot.data!.length,
+            //         itemBuilder: (BuildContext context, int index) {
+            //           final asset = snapshot.data![index];
+            //           return Column(
+            //             children: [
+            //               Actif(
+            //                 asset.name,
+            //                 asset.symbol,
+            //                 asset.prix,
+            //                 '0',
+            //                 asset.imageUrl,
+            //               ),
+            //               const SizedBox(
+            //                 height: 1,
+            //               ),
+            //               const Padding(
+            //                 padding: EdgeInsets.only(left: 20, right: 20),
+            //                 child: Divider(
+            //                   thickness: 0.8,
+            //                 ),
+            //               ),
+            //             ],
+            //           );
+            //         },
+            //       );
+            //     } else if (snapshot.hasError) {
+            //       return Text('${snapshot.error}');
+            //     } else {
+            //       // By default, show a loading spinner.
+            //       return Center(child: const CircularProgressIndicator());
+            //     }
+            //   },
+            // ),
           ),
         ],
       ),
