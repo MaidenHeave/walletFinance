@@ -23,7 +23,6 @@ Future<LoginResponse> login(LoginRequest request) async {
   );
 
   if (response.statusCode == 200) {
-    print(response.body);
     return LoginResponse.fromJson(jsonDecode(response.body));
   } else {
     throw Exception('Failed to login');
