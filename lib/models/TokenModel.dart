@@ -1,8 +1,10 @@
 // ignore_for_file: file_names
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../services/login.dart';
+import '../widgets/widgets.dart';
 
 class Token {
   final String name;
@@ -41,5 +43,16 @@ class Token {
     } else {
       throw Exception('Failed to load tokens');
     }
+  }
+}
+
+class TokenModel extends ChangeNotifier {
+  List<Token> _tokens = [];
+
+  List<Token> get tokens => _tokens;
+
+  fetchTokens() async {
+    _tokens = await fetchTokenList();
+    notifyListeners();
   }
 }
